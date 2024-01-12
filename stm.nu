@@ -14,6 +14,7 @@ def main [
     --modify (-m): number # modify task by id
     --remove (-r): number # remove task by id
 
+    --show-details (-s) # show all details
     --get-details (-g): number # by id
 ] {
     let skip_confirmation = (try {
@@ -174,11 +175,7 @@ def main [
     # print
     let print_details = try {
         open $config | get print_details
-    } catch { true }
-
-    let details_theme = try {
-        open $config | get details_theme
-    }
+    } catch { false }
 
     if $get_details != null {
         return (open_file | get $get_details | get details)
@@ -186,7 +183,7 @@ def main [
 
     if $json {
         echo (open_file | to json)
-    } else if $print_details {
+    } else if $show_details or $print_details {
         echo (open_file)
     } else {
         echo (open_file | reject details)
