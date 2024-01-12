@@ -1,8 +1,8 @@
 #!/usr/bin/env nu
 
 def main [
-    --file (-f): string = "~/Documents/todo.json" # the todo file to operate on
-    --config (-c): string = "~/.config/yatm/config.toml" # path to the config file
+    --file (-f): string = "~/Documents/tasks.json" # the todo file to operate on
+    --config (-c): string = "~/.config/stm/config.toml" # path to the config file
     --json (-j) # output as json
     --yes (-y) # skip confirmation prompt
 
@@ -34,7 +34,7 @@ def main [
         $env.config.table = (open $config | get table)
     }
     try {
-        $env.config.datetime_format = (open $config | get date_format)
+        $env.config.datetime_format = { table: (open $config | get date_format) }
     }
 
     def confirm [ask = true] {

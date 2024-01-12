@@ -32,6 +32,8 @@
         };
       });
 
+      homeManagerModules.default = import ./hm-module.nix self;
+
       devShells = forAllSystems (system: {
         default = pkgs.${system}.mkShell {
           buildInputs = with pkgs.${system}; [
