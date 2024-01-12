@@ -10,7 +10,9 @@ self: {
   inherit (lib.options) mkOption mkEnableOption literalExpression;
 
   tomlFormat = pkgs.formats.toml { };
-  defaultPackage = self.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  stm = self.packages.${pkgs.stdenv.hostPlatform.system};
+  defaultPackage = stm.default;
+  script = stm.script;
   cfg = config.programs.stm;
 in {
   meta.maintainers = with lib.maintainers; [Aylur];
@@ -26,6 +28,15 @@ in {
         The stm package to use.
 
         By default, this option will use the `packages.default` as exposed by this flake.
+      '';
+    };
+
+    integrate = mkOption {
+      type = types.bool;
+      default = false;
+      defaultText = "true";
+      description = ''
+        Integrate into nushell
       '';
     };
 
@@ -61,6 +72,11 @@ in {
     xdg.configFile."stm/config.toml" = mkIf (cfg.config != { }) {
       source = tomlFormat.generate "stm-config" cfg.config;
     };
-    home.packages = optional (cfg.package != null) cfg.package;
+    programs.nushell = mkIf cfg.integrate {
+      extraConfig = ''
+        use ${script} stm
+      '';
+    };
+    home.packages = optional (cfg.package != null && !cfg.integrate) cfg.package;
   };
 }

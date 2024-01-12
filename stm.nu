@@ -1,6 +1,6 @@
 #!/usr/bin/env nu
 
-def main [
+export def stm [
     --file (-f): string = "~/Documents/tasks.json" # the todo file to operate on
     --config (-c): string = "~/.config/stm/config.toml" # path to the config file
     --json (-j) # output as json

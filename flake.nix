@@ -14,22 +14,19 @@
       pkgs = forAllSystems (system: import nixpkgs { inherit system; });
     in
     {
-      packages = forAllSystems (system: {
-        default = pkgs.${system}.stdenv.mkDerivation rec {
-          pname = "stm";
-          version = "0.1.0";
-          src = ./.;
+      packages = forAllSystems (system:
+      let
+        gum = "${pkgs.${system}.gum}/bin/gum";
+      in
+      {
+        script = pkgs.${system}.writeScript "stm" (builtins.readFile ./stm.nu);
+        default = pkgs.${system}.writeScriptBin "stm" ''
+          #!/usr/bin/env nu
 
-          buildInputs = with pkgs.${system}; [
-            nushell
-            gum
-          ];
-
-          installPhase = ''
-            mkdir -p $out/bin
-            cp ${./stm.nu} $out/bin/${pname}
-          '';
-        };
+          use ${./stm.nu} stm
+          alias gum = ${gum}
+          alias main = stm
+        '';
       });
 
       homeManagerModules.default = import ./hm-module.nix self;
