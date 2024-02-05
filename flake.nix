@@ -15,17 +15,15 @@
     in
     {
       packages = forAllSystems (system:
-      let
-        gum = "${pkgs.${system}.gum}/bin/gum";
-      in
       {
         script = pkgs.${system}.writeScript "stm" (builtins.readFile ./stm.nu);
         default = pkgs.${system}.writeScriptBin "stm" ''
           #!/usr/bin/env nu
 
           use ${./stm.nu} stm
-          alias gum = ${gum}
+          $env.PATH = $env.PATH ++ [${pkgs.${system}.gum}/bin]
           alias main = stm
+          echo $env.PATH
         '';
       });
 

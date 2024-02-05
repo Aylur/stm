@@ -73,6 +73,9 @@ in {
       source = tomlFormat.generate "stm-config" cfg.config;
     };
     programs.nushell = mkIf cfg.integrate {
+      extraEnv = ''
+        $env.PATH = ($env.PATH | split row (char esep) | prepend ${pkgs.gum}/bin)
+      '';
       extraConfig = ''
         use ${script} stm
       '';
