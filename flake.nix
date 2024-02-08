@@ -23,7 +23,6 @@
           use ${./stm.nu} stm
           $env.PATH = $env.PATH ++ [${pkgs.${system}.gum}/bin]
           alias main = stm
-          echo $env.PATH
         '';
       });
 
